@@ -1,6 +1,6 @@
-package hello.newsfeed.post.entity;
+package newsfeed.post.entity;
 
-import hello.newsfeed.common.entity.BaseEntity;
+import newsfeed.common.entity.BaseEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

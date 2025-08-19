@@ -1,4 +1,4 @@
-package hello.newsfeed.common.entity;
+package newsfeed.common.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

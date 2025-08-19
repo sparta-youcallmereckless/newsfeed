@@ -1,6 +1,6 @@
-package hello.newsfeed.user.repository;
+package newsfeed.user.repository;
 
-import hello.newsfeed.user.entity.User;
+import newsfeed.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserRepository extends JpaRepository<User, Long> {

@@ -1,6 +1,6 @@
-package hello.newsfeed.user.entity;
+package newsfeed.user.entity;
 
-import hello.newsfeed.common.entity.BaseEntity;
+import newsfeed.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
