@@ -4,4 +4,5 @@ import hello.newsfeed.follow.entity.Follow;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface FollowsRepository extends JpaRepository<Follow, Long> {
+    Follow findByFollowerIdAndFollowingId(Long followerId, Long followingId);
 }
