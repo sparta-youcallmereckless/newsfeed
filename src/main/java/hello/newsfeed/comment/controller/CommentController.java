@@ -3,6 +3,7 @@ package hello.newsfeed.comment.controller;
 import hello.newsfeed.comment.dto.request.CommentCreateRequest;
 import hello.newsfeed.comment.dto.response.CommentCreateResponse;
 import hello.newsfeed.comment.dto.response.CommentReadAllResponse;
+import hello.newsfeed.comment.dto.response.CommentReadSingleResponse;
 import hello.newsfeed.comment.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -31,5 +32,14 @@ public class CommentController {
             @PathVariable Long postId
     ) {
         return ResponseEntity.ok(commentService.getAllComments(postId));
+    }
+
+    // 댓글 단건 조회 기능
+    @GetMapping("/posts/{postId}/comments/{commentId}")
+    public ResponseEntity<CommentReadSingleResponse> getComment(
+            @PathVariable Long postId,
+            @PathVariable Long commentId
+    ) {
+        return ResponseEntity.ok(commentService.getComment(postId, commentId));
     }
 }

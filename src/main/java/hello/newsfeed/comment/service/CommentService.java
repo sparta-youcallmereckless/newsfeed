@@ -3,6 +3,7 @@ package hello.newsfeed.comment.service;
 import hello.newsfeed.comment.dto.request.CommentCreateRequest;
 import hello.newsfeed.comment.dto.response.CommentCreateResponse;
 import hello.newsfeed.comment.dto.response.CommentReadAllResponse;
+import hello.newsfeed.comment.dto.response.CommentReadSingleResponse;
 import hello.newsfeed.comment.entity.Comment;
 import hello.newsfeed.comment.repository.CommentRepository;
 import hello.newsfeed.post.entity.Post;
@@ -10,8 +11,11 @@ import hello.newsfeed.post.repository.PostRepository;
 import hello.newsfeed.user.entity.User;
 import hello.newsfeed.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -66,4 +70,30 @@ public class CommentService {
                 comment.getModifiedAt()
         )).collect(Collectors.toList());
     }
+
+    // 댓글 단건 조회
+    @Transactional(readOnly = true)
+    public CommentReadSingleResponse getComment(Long postId, Long commentId) {
+        Post post = postRepository.findById(postId).orElseThrow(
+                () -> new IllegalArgumentException("해당 게시물이 존재하지 않습니다.")
+        );
+
+        Comment comment = commentRepository.findById(commentId).orElseThrow(
+                () -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다.")
+        );
+
+        if(!post.getId().equals(comment.getPost().getId())) {
+            throw new IllegalArgumentException("게시글에 해당 댓글이 존재하지 않습니다.");
+        }
+
+        return new CommentReadSingleResponse(
+                post.getId(),
+                comment.getUser().getId(),
+                comment.getId(),
+                comment.getContent(),
+                comment.getCreatedAt(),
+                comment.getModifiedAt()
+        );
+    }
+
 }
