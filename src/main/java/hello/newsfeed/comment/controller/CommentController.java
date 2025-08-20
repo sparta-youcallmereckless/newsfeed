@@ -1,9 +1,11 @@
 package hello.newsfeed.comment.controller;
 
 import hello.newsfeed.comment.dto.request.CommentCreateRequest;
+import hello.newsfeed.comment.dto.request.CommentUpdateRequest;
 import hello.newsfeed.comment.dto.response.CommentCreateResponse;
 import hello.newsfeed.comment.dto.response.CommentReadAllResponse;
 import hello.newsfeed.comment.dto.response.CommentReadSingleResponse;
+import hello.newsfeed.comment.dto.response.CommentUpdateResponse;
 import hello.newsfeed.comment.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -41,5 +43,15 @@ public class CommentController {
             @PathVariable Long commentId
     ) {
         return ResponseEntity.ok(commentService.getComment(postId, commentId));
+    }
+
+    // 댓글 수정 기능
+    @PutMapping("comments/{commentId}")
+    public ResponseEntity<CommentUpdateResponse> updateComment(
+            @SessionAttribute(name = "LOGIN_USER") Long userId,
+            @PathVariable Long commentId,
+            @RequestBody CommentUpdateRequest commentUpdateRequest
+    ) {
+        return ResponseEntity.ok(commentService.updateComment(userId, commentId, commentUpdateRequest));
     }
 }

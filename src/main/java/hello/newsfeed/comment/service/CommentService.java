@@ -1,9 +1,11 @@
 package hello.newsfeed.comment.service;
 
 import hello.newsfeed.comment.dto.request.CommentCreateRequest;
+import hello.newsfeed.comment.dto.request.CommentUpdateRequest;
 import hello.newsfeed.comment.dto.response.CommentCreateResponse;
 import hello.newsfeed.comment.dto.response.CommentReadAllResponse;
 import hello.newsfeed.comment.dto.response.CommentReadSingleResponse;
+import hello.newsfeed.comment.dto.response.CommentUpdateResponse;
 import hello.newsfeed.comment.entity.Comment;
 import hello.newsfeed.comment.repository.CommentRepository;
 import hello.newsfeed.post.entity.Post;
@@ -96,4 +98,26 @@ public class CommentService {
         );
     }
 
+    // 댓글 수정 기능
+    @Transactional
+    public CommentUpdateResponse updateComment(Long userId, Long commentId, CommentUpdateRequest commentUpdateRequest) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow(
+                () -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다.")
+        );
+
+        if(!comment.getUser().getId().equals(userId)) {
+            throw new IllegalArgumentException("댓글 작성자만 수정할 수 있습니다.");
+        }
+
+        comment.update(commentUpdateRequest.getContent());
+
+        return new CommentUpdateResponse(
+                comment.getPost().getId(),
+                comment.getUser().getId(),
+                comment.getId(),
+                comment.getContent(),
+                comment.getCreatedAt(),
+                comment.getModifiedAt()
+        );
+    }
 }
