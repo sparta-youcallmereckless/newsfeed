@@ -2,10 +2,13 @@ package hello.newsfeed.comment.controller;
 
 import hello.newsfeed.comment.dto.request.CommentCreateRequest;
 import hello.newsfeed.comment.dto.response.CommentCreateResponse;
+import hello.newsfeed.comment.dto.response.CommentReadAllResponse;
 import hello.newsfeed.comment.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,5 +23,13 @@ public class CommentController {
             @RequestBody CommentCreateRequest commentRequest
     ) {
         return ResponseEntity.ok(commentService.createComment(userId, postId, commentRequest));
+    }
+
+    // 댓글 전체 조회 기능
+    @GetMapping("/posts/{postId}/comments")
+    public ResponseEntity<List<CommentReadAllResponse>> getAllComments(
+            @PathVariable Long postId
+    ) {
+        return ResponseEntity.ok(commentService.getAllComments(postId));
     }
 }
