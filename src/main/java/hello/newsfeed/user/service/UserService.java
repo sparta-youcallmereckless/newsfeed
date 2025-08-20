@@ -83,7 +83,11 @@ public class UserService {
                 request.getEmail()
         );
         return new UserUpdateResponse(
-                user.getEmail()
+                user.getId(),
+                user.getUsername(),
+                user.getEmail(),
+                user.getCreatedAt(),
+                user.getModifiedAt()
         );
     }
 }
