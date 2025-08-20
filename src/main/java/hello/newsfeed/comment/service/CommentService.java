@@ -120,4 +120,19 @@ public class CommentService {
                 comment.getModifiedAt()
         );
     }
+
+    // 댓글 삭제 기능
+    @Transactional
+    public void deleteComment(Long userId, Long commentId) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow(
+                () -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다.")
+        );
+
+        if(!comment.getUser().getId().equals(userId) || !comment.getPost().getUser().getId().equals(userId)) {
+            throw new IllegalArgumentException("댓글 작성자 또는 게시글 작성자만 삭제할 수 있습니다.");
+        }
+
+        commentRepository.delete(comment);
+
+    }
 }
