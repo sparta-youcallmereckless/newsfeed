@@ -44,4 +44,18 @@ public class ProfileService {
                 user.getModifiedAt()
         );
     }
+
+    @Transactional(readOnly = true)
+    public ProfileResponse getOtherProfile(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("user not found")); // TODO: 예외처리 변경 예정
+
+        return new ProfileResponse(
+                user.getId(),
+                user.getUsername(),
+                user.getEmail(),
+                user.getCreatedAt(),
+                user.getModifiedAt()
+        );
+    }
 }

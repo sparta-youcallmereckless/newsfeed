@@ -20,7 +20,7 @@ public class ProfileController {
     public ResponseEntity<ProfileCreateResponse> savedProfile(
             @SessionAttribute(name = Const.LOGIN_USER) Long userId,
             @RequestBody ProfileCreateRequest profileCreateRequest
-            ) {
+    ) {
         return ResponseEntity.ok(profileService.savedProfile(profileCreateRequest));
     }
 
@@ -30,5 +30,13 @@ public class ProfileController {
             @SessionAttribute(name = Const.LOGIN_USER) Long userId
     ) {
         return ResponseEntity.ok(profileService.getMyProfile(userId));
+    }
+
+    // 특정 유저 프로필 조회
+    @GetMapping("/users/{userid}/profile")
+    public ResponseEntity<ProfileResponse> getOtherProfile(
+            @PathVariable Long userId
+    ) {
+        return ResponseEntity.ok(profileService.getOtherProfile(userId));
     }
 }
