@@ -1,8 +1,11 @@
 package hello.newsfeed.user.dto.response;
 
+import lombok.Getter;
+
 import java.time.LocalDateTime;
 
-public class UserResponse {
+@Getter
+public class UserCreateResponse {
 
     // response는 한 번 정해지면 바꿀 일이 없어서 final 붙여줌
     private final Long id;
@@ -11,7 +14,7 @@ public class UserResponse {
     private final LocalDateTime createAt;
     private final LocalDateTime modifiedAt;
 
-    public UserResponse(Long id, String username, String email, LocalDateTime createdAt, LocalDateTime modifiedAt) {
+    public UserCreateResponse(Long id, String username, String email, LocalDateTime createdAt, LocalDateTime modifiedAt) {
         this.id = id;
         this.username = username;
         this.email = email;
