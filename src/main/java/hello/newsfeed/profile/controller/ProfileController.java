@@ -1,0 +1,28 @@
+package hello.newsfeed.profile.controller;
+
+import hello.newsfeed.common.consts.Const;
+import hello.newsfeed.profile.dto.request.ProfileCreateRequest;
+import hello.newsfeed.profile.dto.response.ProfileCreateResponse;
+import hello.newsfeed.profile.service.ProfileService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.SessionAttribute;
+
+@RestController
+@RequiredArgsConstructor
+public class ProfileController {
+
+    private final ProfileService profileService;
+
+    // 유저 프로필 생성
+    @PostMapping("users/me/profile")
+    public ResponseEntity<ProfileCreateResponse> savedProfile(
+            @SessionAttribute(name = Const.LOGIN_USER) Long userId,
+            @RequestBody ProfileCreateRequest profileCreateRequest
+            ) {
+        return ResponseEntity.ok(profileService.savedProfile(profileCreateRequest));
+    }
+}
