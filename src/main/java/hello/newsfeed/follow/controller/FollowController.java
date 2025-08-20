@@ -30,10 +30,12 @@ public class FollowController {
     public ResponseEntity<FollowResponseDto> unfollow(@RequestBody FollowRequestDto requestDto) {
         followService.unfollowUser(requestDto);
 
-        FollowResponseDto dto = new FollowResponseDto();
-        dto.setFollowerId(requestDto.getFollowerId());
-        dto.setFollowingId(requestDto.getFollowingId());
-        dto.setMessage("사용자 " + requestDto.getFollowingId() + "를 언팔로우 했습니다!");
+        FollowResponseDto dto = new FollowResponseDto(
+                null,
+                requestDto.getFollowerId(),
+                requestDto.getFollowingId(),
+                "사용자 " + requestDto.getFollowingId() + "를 언팔로우 했습니다!"
+        );
 
         return ResponseEntity.ok(dto);
     }

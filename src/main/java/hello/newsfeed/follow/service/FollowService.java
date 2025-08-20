@@ -8,6 +8,9 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 
@@ -18,6 +21,7 @@ public class FollowService {
     //필드(멤버 변수) 작성
     // ㄴ followsRepository 클래스의 DB 를 사용할 거기 때문에, 사용하기 전에 followsRepository 클래스의 주소를 적어주는 것임
     private  FollowsRepository followsRepository;
+
 
 
     // Repository 객체를 의존성 주입(DI, Dependency Injection)
@@ -36,10 +40,11 @@ public class FollowService {
 
     // TODO 사용자 팔로우
 
-    @Transactional
     // NOTE 0. Service 클래스에 필요한 Annotation을 적자! @Transactional 은 거의 필수!!
     // @Transactional : 이 메서드가 실행될 때, Spring이 트랜잭션을 시작하고, 끝날 때 commit 하여 DB에 반영.
     // 런타임 예외(RuntimeException, unchecked exception) 발생하면 롤백함
+    @Transactional
+
 
     // NOTE 1. Service 매서드 생성 선언
     // followUser로 메서드를 호출하면, 결과 값을 FollowResponseDto 로 돌려줄 것임.
@@ -58,7 +63,6 @@ public class FollowService {
         Follow savedFollow = followsRepository.save(follow);
 
 
-
         // NOTE 4. 응답 객체로 변환해서 FollowResponseDto 반환
         // 저장된 결과(savedFollow)에서 id, followerId, followingId를 꺼내와서
         // 응답 객체인 FollowResponseDto를 생성하고 반환
@@ -66,14 +70,10 @@ public class FollowService {
                 savedFollow.getId(),
                 savedFollow.getFollowerId(),
                 savedFollow.getFollowingId(),
-                savedFollow.getmessage()
+                null
 
         );
-
-        // NOTE 5. 팔로잉 리스트 관리 (관계가 4 개)
-
     }
-
     // TODO 사용자 언팔로우
     public void unfollowUser(FollowRequestDto requestDto) {
         // 1. 삭제할 팔로우 객체 찾기
@@ -86,5 +86,22 @@ public class FollowService {
             // 2. DB에서 삭제 (하드 삭제 -> 해당 레코드 자체를 완전히 제거)
             followsRepository.delete(follow);
         }
+    }
+        // NOTE 5. 팔로잉 리스트 관리 (관계가 4 개)
+        // 특정 사용자의 팔로잉 목록 조회 (내가 팔로우한 사람들)
+        public List<Long> getFollowingList(Long userId) {
+            return followsRepository.findAll().stream()
+                    .filter(f -> f.getFollowerId().equals(userId))
+                    .map(Follow::getFollowingId)
+                    .collect(Collectors.toList());
+        }
+
+    // 나를 팔로우한 사람들
+    public List<Long> getFollowerList(Long userId) {
+        return followsRepository.findAll().stream()
+                .filter(f -> f.getFollowingId().equals(userId))
+                .map(Follow::getFollowerId)
+                .collect(Collectors.toList());
+
     }
 }
