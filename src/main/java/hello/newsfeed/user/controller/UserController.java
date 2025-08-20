@@ -6,10 +6,7 @@ import hello.newsfeed.user.dto.response.UserResponse;
 import hello.newsfeed.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -31,6 +28,14 @@ public class UserController {
     @GetMapping("/users")
     public ResponseEntity<List<UserResponse>> getAllUsers() {
         return ResponseEntity.ok(userService.findAll());
+    }
+
+    // 특정 유저 조회
+    @GetMapping("/users/{userId}")
+    public ResponseEntity<UserResponse> getOneUser(
+            @PathVariable Long userId
+    ) {
+        return ResponseEntity.ok(userService.findOne(userId));
     }
 }
 
