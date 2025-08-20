@@ -50,6 +50,4 @@ public class ProfileController {
     ) {
         return ResponseEntity.ok(profileService.updateProfile(userId, userProfileUpdateRequest));
     }
-
-    // 유저 비밀번호 변경
 }
