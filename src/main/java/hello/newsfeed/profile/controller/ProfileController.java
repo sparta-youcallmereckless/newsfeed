@@ -2,9 +2,11 @@ package hello.newsfeed.profile.controller;
 
 import hello.newsfeed.common.consts.Const;
 import hello.newsfeed.profile.dto.request.ProfileCreateRequest;
+import hello.newsfeed.profile.dto.request.ProfileUpdateRequest;
 import hello.newsfeed.profile.dto.response.ProfileCreateResponse;
 import hello.newsfeed.profile.dto.response.ProfileResponse;
 import hello.newsfeed.profile.service.ProfileService;
+import hello.newsfeed.profile.dto.response.ProfileUpdateResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -38,5 +40,14 @@ public class ProfileController {
             @PathVariable Long userId
     ) {
         return ResponseEntity.ok(profileService.getOtherProfile(userId));
+    }
+
+    // 유저 프로필 수정
+    @PutMapping("/users/me/profile")
+    public ResponseEntity<ProfileUpdateResponse> updateProfile(
+            @SessionAttribute(name = Const.LOGIN_USER) Long userId,
+            @RequestBody ProfileUpdateRequest userProfileUpdateRequest
+    ) {
+        return ResponseEntity.ok(profileService.updateProfile(userId, userProfileUpdateRequest));
     }
 }
