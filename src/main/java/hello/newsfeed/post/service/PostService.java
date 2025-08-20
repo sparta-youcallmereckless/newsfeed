@@ -77,6 +77,7 @@ public class PostService {
         //수정된 내용 데이터베이스 저장
         return toResponse(updated);
     }
+
 @Transactional
 public void  deletePost(Long postId, Long userId)
         //게시물 삭제 기능
