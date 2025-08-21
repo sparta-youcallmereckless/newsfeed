@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 // ResponseDto에는 final 키워드, 생성자 넣어야함
 @Getter
 public class CommentReadSingleResponse {
-    private final Long postId;                  // 게시글 ID
+    private final Long postId;                  // 게시물 ID
     private final Long userId;                  // 사용자 ID
     private final Long id;                      // 댓글 ID
     private final String content;               // 댓글 내용
