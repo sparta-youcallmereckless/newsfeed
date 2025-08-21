@@ -9,43 +9,50 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/follows") // 이 컨트롤러에서 제공하는 API의 기본 URL 경로를 지정 (즉, "/api/follows"로 시작하는 요청은 이 컨트롤러가 처리)
-@RequiredArgsConstructor //NOTE: 스프링이 자동으로 생성자 주입(Dependency Injection) 맨날 까먹고 생성자 또 쓰는데 그러지 마라..
+@RequestMapping("/api/follows")
+@RequiredArgsConstructor
 
 public class FollowController {
 
+    // Service 객체 의존성 주입
     private final FollowService followService;
-
 
     // TODO 팔로우
     @PostMapping
     public ResponseEntity<FollowResponseDto> follow(@RequestBody FollowRequestDto requestDto) {
+
+        // Service 계층에게 "팔로우 처리"를 시킴
+        // followUser()는 DB 저장 같은 실제 로직을 수행하고 결과를 FollowResponseDto 로 반환함
         FollowResponseDto dto = followService.followUser(requestDto);
-        dto.setMessage("사용자 " + requestDto.getFollowingId() + "를 팔로우 했습니다!");
+
+        // 메시지 출력
+        dto.setMessage(requestDto.getFollowerId() +"님이" + requestDto.getFollowingId() + "님을" + "팔로우 합니다");
+
+        // ResponseEntity.ok() : 응답 코드 200(성공)과 함께 dto 객체를 반환
         return ResponseEntity.ok(dto);
     }
 
     // TODO 언팔로우
     @DeleteMapping
     public ResponseEntity<FollowResponseDto> unfollow(@RequestBody FollowRequestDto requestDto) {
+
+        // Service 계층에게 "언팔로우 처리"를 시킴
         followService.unfollowUser(requestDto);
 
+        // 응답으로 보낼 DTO를 직접 생성
         FollowResponseDto dto = new FollowResponseDto(
-                null,
+                null, // id 값은 null (DB 저장이 필요 없으니까)
                 requestDto.getFollowerId(),
                 requestDto.getFollowingId(),
-                "사용자 " + requestDto.getFollowingId() + "를 언팔로우 했습니다!"
+                 requestDto.getFollowingId() + "를 언팔로우 했습니다."
         );
 
+        // 최종 응답 반환 (200 OK + dto)
         return ResponseEntity.ok(dto);
     }
 }
-    /**&
+    /**
      @PathVariable 와 @RequestBody 차이점 확인 // .pahth 할때 필터의 아이디를 빼서 써올수 있나 // SessionAttributions ID 참고
 
-            //요청 바디(JSON 형식)에 들어 있는 followRequestDto 데이터를 꺼내옴. 이 안에는 "누구를 팔로우할지 (followeeId)" 정보가 들어 있음.
-            @RequestBody FollowRequestDto followRequestDto
-            **//
-    //
 
 

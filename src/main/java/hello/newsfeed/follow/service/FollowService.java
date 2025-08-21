@@ -87,7 +87,7 @@ public class FollowService {
             followsRepository.delete(follow);
         }
     }
-        // NOTE 5. 팔로잉 리스트 관리 (관계가 4 개)
+        // NOTE 5. 팔로잉 리스트 관리
         // 특정 사용자의 팔로잉 목록 조회 (내가 팔로우한 사람들)
         public List<Long> getFollowingList(Long userId) {
             return followsRepository.findAll().stream()
