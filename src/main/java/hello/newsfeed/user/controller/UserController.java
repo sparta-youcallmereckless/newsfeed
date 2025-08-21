@@ -10,6 +10,7 @@ import hello.newsfeed.user.dto.response.UserUpdateResponse;
 import hello.newsfeed.user.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +27,7 @@ public class UserController {
     // TODO: 회원가입 signup으로 진행
     @PostMapping("/users/signup")
     public ResponseEntity<UserCreateResponse> createUser(
-            @RequestBody UserCreateRequest request
+            @Valid @RequestBody UserCreateRequest request
     ) {
         return ResponseEntity.ok(userService.save(request));
     }
