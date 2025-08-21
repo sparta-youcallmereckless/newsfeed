@@ -16,10 +16,4 @@ public class FollowResponseDto {
     private Long followingId; // 팔로우 당한 사람
     private String message; // 응답 메시지
 
-    /**
-    public FollowResponseDto(Long id, Long followerId, Long followeeId) {
-        this.id = id;
-        this.followerId = followerId;
-        this.followeeId = followeeId;
-     */
 }

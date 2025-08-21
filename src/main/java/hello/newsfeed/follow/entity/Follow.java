@@ -8,12 +8,20 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
+
+// 기본 생성자를 자동 생성, 접근제한은 protected
+// JPA가 객체를 생성할 때 필요하지만, 외부에서 기본 생성자를 직접 쓰지 못하게 제한
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+
+// BaseEntity 상속: 생성/수정 시간 등의 공통 필드 포함
 public class Follow extends BaseEntity {
 
+    // 기본 키(primary key) 지정
+    // 자동 증가 전략: DB가 id 값을 자동으로 생성
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    //followerId 필드를 DB 테이블의 컬럼과 연결
     @Column(nullable = false)
     private Long followerId; // 팔로우 하는 사람 (나)
 

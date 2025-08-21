@@ -3,7 +3,7 @@ package hello.newsfeed.profile.dto.request;
 import lombok.Getter;
 
 @Getter
-public class ProfileUpdateRequest {
+public class ProfileDeleteRequest {
 
-    private String nickname;
+    private String password;
 }
