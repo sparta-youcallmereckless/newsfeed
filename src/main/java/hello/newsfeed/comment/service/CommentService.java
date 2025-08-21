@@ -34,9 +34,7 @@ public class CommentService {
                 () -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다.")
         );
 
-        Post post = postRepository.findById(postId).orElseThrow(
-                () -> new IllegalArgumentException("해당 게시물이 존재하지 않습니다.")
-        );
+        Post post = findPostById(postId);
 
         Comment comment = new Comment(
                 commentRequest.getContent(),
@@ -78,9 +76,7 @@ public class CommentService {
                 () -> new IllegalArgumentException("해당 게시물이 존재하지 않습니다.")
         );
 
-        Comment comment = commentRepository.findById(commentId).orElseThrow(
-                () -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다.")
-        );
+        Comment comment = findCommentById(commentId);
 
         if(!post.getId().equals(comment.getPost().getId())) {
             throw new IllegalArgumentException("게시글에 해당 댓글이 존재하지 않습니다.");
@@ -99,9 +95,7 @@ public class CommentService {
     // 댓글 수정 기능
     @Transactional
     public CommentUpdateResponse updateComment(Long userId, Long commentId, CommentUpdateRequest commentUpdateRequest) {
-        Comment comment = commentRepository.findById(commentId).orElseThrow(
-                () -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다.")
-        );
+        Comment comment = findCommentById(commentId);
 
         if(!comment.getUser().getId().equals(userId)) {
             throw new IllegalArgumentException("댓글 작성자만 수정할 수 있습니다.");
@@ -131,5 +125,21 @@ public class CommentService {
         }
 
         commentRepository.delete(comment);
+    }
+
+    // 주어진 postId로 게시물을 조회하는 메서드
+    // 존재하지 않을 경우, IllegalArgumentException을 발생시킴
+    private Post findPostById(Long postId) {
+        return postRepository.findById(postId).orElseThrow(
+                () -> new IllegalArgumentException("해당 게시물이 존재하지 않습니다.")
+        );
+    }
+
+    // 주어진 commentId로 댓글을 조회하는 메서드
+    // 존재하지 않을 경우, IllegalArgumentException을 발생시킴
+    private Comment findCommentById(Long commentId) {
+        return commentRepository.findById(commentId).orElseThrow(
+                () -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다.")
+        );
     }
 }
