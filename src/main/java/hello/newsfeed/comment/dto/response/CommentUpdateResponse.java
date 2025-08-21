@@ -6,6 +6,8 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+// 댓글 수정용 ResponseDto
+// ResponseDto에는 final 키워드, 생성자 넣어야함
 @Getter
 public class CommentUpdateResponse {
     private final Long postId;                  // 게시글 ID
