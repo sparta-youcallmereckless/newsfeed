@@ -71,7 +71,7 @@ public class UserController {
     @PatchMapping("/users/me/password")
     public ResponseEntity<Void> updatePassword(
             @SessionAttribute(name = Const.LOGIN_USER) Long userId,
-            @RequestBody PasswordUpdateRequest passwordUpdateRequest
+            @Valid @RequestBody PasswordUpdateRequest passwordUpdateRequest
     ) {
         return ResponseEntity.ok(userService.updatePassword(userId, passwordUpdateRequest));
     }
