@@ -51,8 +51,6 @@ public class FollowController {
         return ResponseEntity.ok(dto);
     }
 }
-    /**
-     @PathVariable 와 @RequestBody 차이점 확인 // .pahth 할때 필터의 아이디를 빼서 써올수 있나 // SessionAttributions ID 참고
 
 
 
