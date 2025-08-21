@@ -4,6 +4,7 @@ import hello.newsfeed.auth.dto.request.AuthRequest;
 import hello.newsfeed.auth.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,7 +18,7 @@ public class AuthController {
 
     @PostMapping("/users/login")
     public ResponseEntity<String> login(
-            @RequestBody AuthRequest authRequest,
+            @Valid @RequestBody AuthRequest authRequest,
             HttpServletRequest request
     ) {
         // Cookie Session을 발급
