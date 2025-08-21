@@ -92,6 +92,11 @@ public class UserService {
     }
 
     @Transactional
+    public void deleteById(Long userId) {
+        userRepository.deleteById(userId);
+    }
+
+    @Transactional
     public Void updatePassword(Long userId, PasswordUpdateRequest passwordUpdateRequest) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("user not found")); // TODO: 예외처리 변경 예정
