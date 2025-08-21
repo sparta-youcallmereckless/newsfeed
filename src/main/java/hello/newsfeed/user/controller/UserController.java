@@ -27,7 +27,7 @@ public class UserController {
     // TODO: 회원가입 signup으로 진행
     @PostMapping("/users/signup")
     public ResponseEntity<UserCreateResponse> createUser(
-            @RequestBody UserCreateRequest request
+            @Valid @RequestBody UserCreateRequest request
     ) {
         return ResponseEntity.ok(userService.save(request));
     }

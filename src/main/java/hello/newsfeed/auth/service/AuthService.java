@@ -22,7 +22,7 @@ public class AuthService {
                 () -> new IllegalArgumentException("존재하지 않는 사용자입니다.")
         );
 
-        if (!passwordEncoder.matches(request.getPassword(), request.getPassword())) {
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new InvalidCredentialException("비밀번호가 일치하지 않습니다.");
         }
         return user.getId();
