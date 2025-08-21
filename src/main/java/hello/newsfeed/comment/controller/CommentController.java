@@ -7,6 +7,7 @@ import hello.newsfeed.comment.dto.response.CommentReadAllResponse;
 import hello.newsfeed.comment.dto.response.CommentReadSingleResponse;
 import hello.newsfeed.comment.dto.response.CommentUpdateResponse;
 import hello.newsfeed.comment.service.CommentService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +24,7 @@ public class CommentController {
     public ResponseEntity<CommentCreateResponse> createComment(
             @SessionAttribute(name = "LOGIN_USER") Long userId,
             @PathVariable Long postId,
-            @RequestBody CommentCreateRequest commentRequest
+            @Valid @RequestBody CommentCreateRequest commentRequest
     ) {
         return ResponseEntity.ok(commentService.createComment(userId, postId, commentRequest));
     }
@@ -50,7 +51,7 @@ public class CommentController {
     public ResponseEntity<CommentUpdateResponse> updateComment(
             @SessionAttribute(name = "LOGIN_USER") Long userId,
             @PathVariable Long commentId,
-            @RequestBody CommentUpdateRequest commentUpdateRequest
+            @Valid @RequestBody CommentUpdateRequest commentUpdateRequest
     ) {
         return ResponseEntity.ok(commentService.updateComment(userId, commentId, commentUpdateRequest));
     }
