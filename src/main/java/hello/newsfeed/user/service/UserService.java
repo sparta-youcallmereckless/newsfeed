@@ -1,5 +1,6 @@
 package hello.newsfeed.user.service;
 
+import hello.newsfeed.user.dto.request.PasswordUpdateRequest;
 import hello.newsfeed.user.dto.request.UserCreateRequest;
 import hello.newsfeed.user.dto.request.UserUpdateRequest;
 import hello.newsfeed.user.dto.response.UserCreateResponse;
@@ -11,7 +12,6 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,6 +89,15 @@ public class UserService {
                 user.getCreatedAt(),
                 user.getModifiedAt()
         );
+    }
+
+    @Transactional
+    public Void updatePassword(Long userId, PasswordUpdateRequest passwordUpdateRequest) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("user not found")); // TODO: 예외처리 변경 예정
+
+        user.updatePassword(passwordUpdateRequest.getNewPassword());
+        return null;
     }
 }
 

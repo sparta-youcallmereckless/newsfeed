@@ -1,6 +1,8 @@
 package hello.newsfeed.profile.controller;
 
 import hello.newsfeed.common.consts.Const;
+import hello.newsfeed.profile.dto.request.ProfileDeleteRequest;
+import hello.newsfeed.user.dto.request.PasswordUpdateRequest;
 import hello.newsfeed.profile.dto.request.ProfileCreateRequest;
 import hello.newsfeed.profile.dto.request.ProfileUpdateRequest;
 import hello.newsfeed.profile.dto.response.ProfileCreateResponse;
@@ -19,11 +21,11 @@ public class ProfileController {
 
     // 유저 프로필 생성
     @PostMapping("users/me/profile")
-    public ResponseEntity<ProfileCreateResponse> savedProfile(
+    public ResponseEntity<ProfileCreateResponse> save(
             @SessionAttribute(name = Const.LOGIN_USER) Long userId,
             @RequestBody ProfileCreateRequest profileCreateRequest
     ) {
-        return ResponseEntity.ok(profileService.savedProfile(profileCreateRequest));
+        return ResponseEntity.ok(profileService.save(userId, profileCreateRequest));
     }
 
     // 유저 프로필 조회
@@ -35,7 +37,7 @@ public class ProfileController {
     }
 
     // 특정 유저 프로필 조회
-    @GetMapping("/users/{userid}/profile")
+    @GetMapping("/users/{userId}/profile")
     public ResponseEntity<ProfileResponse> getOtherProfile(
             @PathVariable Long userId
     ) {
@@ -44,10 +46,20 @@ public class ProfileController {
 
     // 유저 프로필 수정
     @PutMapping("/users/me/profile")
-    public ResponseEntity<ProfileUpdateResponse> updateProfile(
+    public ResponseEntity<ProfileUpdateResponse> update(
             @SessionAttribute(name = Const.LOGIN_USER) Long userId,
             @RequestBody ProfileUpdateRequest userProfileUpdateRequest
     ) {
-        return ResponseEntity.ok(profileService.updateProfile(userId, userProfileUpdateRequest));
+        return ResponseEntity.ok(profileService.update(userId, userProfileUpdateRequest));
     }
+
+    // 유저 프로필 삭제
+    @DeleteMapping("/users/me/profile")
+    public void deleteProfile(
+            @SessionAttribute(name = Const.LOGIN_USER) Long userId,
+            @RequestBody ProfileDeleteRequest profileDeleteRequest
+    ) {
+        profileService.deleteProfile(userId, profileDeleteRequest.getPassword());
+    }
+
 }
