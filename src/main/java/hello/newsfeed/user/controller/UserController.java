@@ -1,5 +1,7 @@
 package hello.newsfeed.user.controller;
 
+import hello.newsfeed.common.consts.Const;
+import hello.newsfeed.user.dto.request.PasswordUpdateRequest;
 import hello.newsfeed.user.dto.request.UserCreateRequest;
 import hello.newsfeed.user.dto.request.UserUpdateRequest;
 import hello.newsfeed.user.dto.response.UserCreateResponse;
@@ -48,6 +50,15 @@ public class UserController {
             @RequestBody UserUpdateRequest request
     ) {
         return ResponseEntity.ok(userService.updateUser(userId, request));
+    }
+
+    // 유저 비밀번호 수정
+    @PatchMapping("/users/me/password")
+    public ResponseEntity<Void> updatePassword(
+            @SessionAttribute(name = Const.LOGIN_USER) Long userId,
+            @RequestBody PasswordUpdateRequest passwordUpdateRequest
+    ) {
+        return ResponseEntity.ok(userService.updatePassword(userId, passwordUpdateRequest));
     }
 
     // TODO: 회원탈퇴
