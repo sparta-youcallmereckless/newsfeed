@@ -90,5 +90,10 @@ public class UserService {
                 user.getModifiedAt()
         );
     }
+
+    @Transactional
+    public void deleteById(Long userId) {
+        userRepository.deleteById(userId);
+    }
 }
 
