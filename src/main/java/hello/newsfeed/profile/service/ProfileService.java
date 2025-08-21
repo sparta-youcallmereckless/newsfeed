@@ -52,13 +52,16 @@ public class ProfileService {
                 .orElseThrow(() -> new IllegalArgumentException("user not found") // TODO: 예외처리 변경 예정
                 );
 
+        Profile profile = profileRepository.findByUserId(userId)
+                .orElseThrow(() -> new IllegalArgumentException("프로필을 찾을 수 없습니다.")); // TODO: 예외처리 변경 예정
+
         return new ProfileResponse(
-                user.getId(),
-                user.getUsername(),
-                getMyProfile(userId).getNickname(),
-                user.getEmail(),
-                user.getCreatedAt(),
-                user.getModifiedAt()
+                profile.getId(),
+                profile.getUsername(),
+                profile.getNickname(),
+                profile.getEmail(),
+                profile.getCreatedAt(),
+                profile.getModifiedAt()
         );
     }
 
@@ -67,13 +70,17 @@ public class ProfileService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("user not found")); // TODO: 예외처리 변경 예정
 
+
+        Profile profile = profileRepository.findByUserId(userId)
+                .orElseThrow(() -> new IllegalArgumentException("프로필을 찾을 수 없습니다.")); // TODO: 예외처리 변경 예정
+
         return new ProfileResponse(
-                user.getId(),
-                user.getUsername(),
-                getMyProfile(userId).getNickname(),
-                user.getEmail(),
-                user.getCreatedAt(),
-                user.getModifiedAt()
+                profile.getId(),
+                profile.getUsername(),
+                profile.getNickname(),
+                profile.getEmail(),
+                profile.getCreatedAt(),
+                profile.getModifiedAt()
         );
     }
 
@@ -89,9 +96,6 @@ public class ProfileService {
         profile.updateProfile(profileUpdateRequest.getNickname());
 
         // 더티체킹
-//        profile.updateProfile(
-//                profileUpdateRequest.getNickname()
-//        );
         return new ProfileUpdateResponse(
                 profile.getId(),
                 profile.getUsername(),
