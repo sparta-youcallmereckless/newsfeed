@@ -6,12 +6,12 @@ import java.time.LocalDateTime;
 
 @Getter
 public class PostResponse {
-    private final Long id;
-    private final String authorId;
+    private  Long id;
+    private  String authorId;
     private final String title;
     private final String content;
-    private final LocalDateTime createdAt;
-    private final LocalDateTime modifiedAt;
+    private  LocalDateTime createdAt;
+    private  LocalDateTime modifiedAt;
 
     public PostResponse
             (Long id, String authorId, String title, String content, LocalDateTime createdAt, LocalDateTime modifiedAt) {
@@ -22,4 +22,11 @@ public class PostResponse {
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
     }
+
+    public PostResponse(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
 }
+
+//파이널 내가 임의로 지움 (당장 오류해결)

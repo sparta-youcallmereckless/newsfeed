@@ -1,47 +1,50 @@
 package hello.newsfeed.post.entity;
 
+import hello.newsfeed.common.entity.BaseEntity;
 import hello.newsfeed.post.dto.request.PostRequest;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import hello.newsfeed.post.dto.response.PostResponse;
+import hello.newsfeed.user.entity.User;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @NoArgsConstructor
-public class Post {
+public class Post extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private String authorId;
 
     private String title;
 
     private String content;
 
+    //프라이빗 스트링 이미지 컬럼 추가
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "userid", nullable = false)
+    private User user;
+
     public Post(
-            Long id, String authorId, String title, String content) {
+            Long id, String title, String content) {
         this.id = id;
-        this.authorId = authorId;
         this.title = title;
         this.content = content;
     }
-
     public Post(PostRequest postRequest) {
-        this.authorId = authorId;
         this.title = title;
         this.content = content;
     }
-
     public void update(PostRequest postRequest) {
-        this.authorId = authorId;
         this.title = title;
         this.content = content;
     }
-
+    public PostResponse toResponse() {
+        return new PostResponse(
+                this.title,
+                this.content
+        );
+    }
 }

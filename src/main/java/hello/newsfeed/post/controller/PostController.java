@@ -2,7 +2,7 @@ package hello.newsfeed.post.controller;
 
 import hello.newsfeed.post.dto.request.PostRequest;
 import hello.newsfeed.post.dto.response.PostResponse;
-import hello.newsfeed.post.repository.PostRepository;
+
 import hello.newsfeed.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +17,7 @@ import java.util.List;
 // final 필드(postService)에 대한 생성자를 자동으로 만들어 의존성 주입
 public class PostController {
 
+
     private final PostService postService;
     // PostService 의존성 주입
     // 실제 게시물 생성, 조회, 수정, 삭제 로직은 서비스에서 수행
@@ -24,7 +25,7 @@ public class PostController {
     @PostMapping("/posts")
     // HTTP POST 요청 경로 이하 생략 "/Posts"와 매핑
     // 새로운 게시물 생성 요청
-    public PostRepository savePost
+    public PostResponse savePost
             (@RequestBody PostRequest postRequest) {
         // 클라이언트 요청 본문에 담긴 PostRequest를 PostRequest로 받아옴
         // @RequestBody는 JSON을 PostRequest 객체로 변환
@@ -43,8 +44,8 @@ public class PostController {
 
     @GetMapping("/posts/{postId}")
     //게시물 하나 조회 요청
-    public PostResponse findPostById(@PathVariable Long postsId) {
-        return postService.findPostById(postsId);
+    public PostResponse findPostById(@PathVariable Long postId) {
+        return postService.findPostById(postId);
         //서비스 findPostById호출
         //디비 에서 사용자가 지정한 개시물 조회후 반환
     }
@@ -53,11 +54,11 @@ public class PostController {
     //수정 메서드
     public PostResponse updatePost(
             @RequestBody PostRequest postRequest,
-            @PathVariable Long postsId)
+            @PathVariable Long postId)
     //본문에서(Json형태)로 내용을 PostRequest로 받고
     //사용자에게 수정할 게시물 ID(포스트 아이디)를 받음
     {
-        return postService.updatePost(postsId, postRequest);
+        return postService.updatePost(postId, postRequest);
     }
     //서비스 업데이트 호출 수정후 DTO 반화
 
@@ -65,11 +66,11 @@ public class PostController {
     //삭제 기능
     public void deletePost(
             @RequestParam Long userId,
-            @PathVariable Long postsId)
+            @PathVariable Long postId)
     // 리퀘스트 파람으로 userID 삭제할사람 식별
     // 패스 베리어블로 삭제할 포스트 식별
     {
-        postService.deletePost(postsId, userId);
+        postService.deletePost(postId, userId);
     }
-//서비스에서 삭제 조건 확인후 eㅣ비에서 삭제 수행
+//서비스에서 삭제 조건 확인후 디비에서 삭제 수행
 }
