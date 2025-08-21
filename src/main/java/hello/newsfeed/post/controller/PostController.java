@@ -4,6 +4,7 @@ import hello.newsfeed.post.dto.request.PostRequest;
 import hello.newsfeed.post.dto.response.PostResponse;
 
 import hello.newsfeed.post.service.PostService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +27,7 @@ public class PostController {
     // HTTP POST 요청 경로 이하 생략 "/Posts"와 매핑
     // 새로운 게시물 생성 요청
     public PostResponse savePost
-            (@RequestBody PostRequest postRequest) {
+            (@Valid@RequestBody PostRequest postRequest) {
         // 클라이언트 요청 본문에 담긴 PostRequest를 PostRequest로 받아옴
         // @RequestBody는 JSON을 PostRequest 객체로 변환
         return postService.savePost(postRequest);
@@ -53,7 +54,7 @@ public class PostController {
     @PutMapping("/posts/{postId}")
     //수정 메서드
     public PostResponse updatePost(
-            @RequestBody PostRequest postRequest,
+            @Valid @RequestBody PostRequest postRequest,
             @PathVariable Long postId)
     //본문에서(Json형태)로 내용을 PostRequest로 받고
     //사용자에게 수정할 게시물 ID(포스트 아이디)를 받음
