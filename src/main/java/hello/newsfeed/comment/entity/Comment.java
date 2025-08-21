@@ -5,6 +5,7 @@ import hello.newsfeed.post.entity.Post;
 import hello.newsfeed.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -29,6 +30,7 @@ public class Comment extends BaseEntity {
 
     // 생성자
     // id는 자동 생성되므로 생성자에서 받지 않음
+    @Builder
     public Comment(String content, Post post, User user) {
         this.content = content;
         this.post = post;

@@ -1,5 +1,7 @@
 package hello.newsfeed.comment.dto.response;
 
+import hello.newsfeed.comment.entity.Comment;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -14,6 +16,7 @@ public class CommentCreateResponse {
     private final LocalDateTime modifiedAt;     // 수정일
 
     // 생성자
+    @Builder
     public CommentCreateResponse(Long postId, Long userId, Long id, String content, LocalDateTime createdAt, LocalDateTime modifiedAt) {
         this.postId = postId;
         this.userId = userId;
@@ -21,5 +24,17 @@ public class CommentCreateResponse {
         this.content = content;
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
+    }
+
+    // 엔티티로부터 DTO를 생성함
+    public static CommentCreateResponse from(Comment comment) {
+        return CommentCreateResponse.builder()
+                .postId(comment.getPost().getId())
+                .userId(comment.getUser().getId())
+                .id(comment.getId())
+                .content(comment.getContent())
+                .createdAt(comment.getCreatedAt())
+                .modifiedAt(comment.getModifiedAt())
+                .build();
     }
 }

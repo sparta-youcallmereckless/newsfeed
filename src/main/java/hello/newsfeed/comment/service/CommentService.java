@@ -16,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,22 +35,25 @@ public class CommentService {
 
         Post post = findPostById(postId);
 
-        Comment comment = new Comment(
-                commentRequest.getContent(),
-                post,
-                user
-        );
+//        Comment comment = new Comment(
+//                commentRequest.getContent(),
+//                post,
+//                user
+//        );
+        // DTO -> Entity로 변환 (Builder 패턴 적용)
+        Comment comment = commentRequest.toEntity(post, user);
 
         Comment savedComment = commentRepository.save(comment);
 
-        return new CommentCreateResponse(
-                post.getId(),
-                user.getId(),
-                savedComment.getId(),
-                savedComment.getContent(),
-                savedComment.getCreatedAt(),
-                savedComment.getModifiedAt()
-        );
+        return CommentCreateResponse.from(savedComment);
+//        return new CommentCreateResponse(
+//                post.getId(),
+//                user.getId(),
+//                savedComment.getId(),
+//                savedComment.getContent(),
+//                savedComment.getCreatedAt(),
+//                savedComment.getModifiedAt()
+//        );
     }
 
     // 댓글 전체 조회
@@ -59,15 +61,19 @@ public class CommentService {
     public List<CommentReadAllResponse> getAllComments(Long postId) {
         List<Comment> comments = commentRepository.findByPostId(postId);
 
-        return comments.stream().map(comment -> new CommentReadAllResponse(
-                comment.getPost().getId(),
-                comment.getUser().getId(),
-                comment.getId(),
-                comment.getContent(),
-                comment.getCreatedAt(),
-                comment.getModifiedAt()
-        )).collect(Collectors.toList());
+        return comments.stream().map(CommentReadAllResponse::from).collect(Collectors.toList());
+
+//        return comments.stream().map(comment -> new CommentReadAllResponse(
+//                comment.getPost().getId(),
+//                comment.getUser().getId(),
+//                comment.getId(),
+//                comment.getContent(),
+//                comment.getCreatedAt(),
+//                comment.getModifiedAt()
+//        )).collect(Collectors.toList());
     }
+
+
 
     // 댓글 단건 조회
     @Transactional(readOnly = true)
@@ -82,14 +88,15 @@ public class CommentService {
             throw new IllegalArgumentException("게시글에 해당 댓글이 존재하지 않습니다.");
         }
 
-        return new CommentReadSingleResponse(
-                post.getId(),
-                comment.getUser().getId(),
-                comment.getId(),
-                comment.getContent(),
-                comment.getCreatedAt(),
-                comment.getModifiedAt()
-        );
+        return CommentReadSingleResponse.from(comment);
+//        return new CommentReadSingleResponse(
+//                post.getId(),
+//                comment.getUser().getId(),
+//                comment.getId(),
+//                comment.getContent(),
+//                comment.getCreatedAt(),
+//                comment.getModifiedAt()
+//        );
     }
 
     // 댓글 수정 기능
@@ -103,14 +110,15 @@ public class CommentService {
 
         comment.update(commentUpdateRequest.getContent());
 
-        return new CommentUpdateResponse(
-                comment.getPost().getId(),
-                comment.getUser().getId(),
-                comment.getId(),
-                comment.getContent(),
-                comment.getCreatedAt(),
-                comment.getModifiedAt()
-        );
+        return CommentUpdateResponse.from(comment);
+//        return new CommentUpdateResponse(
+//                comment.getPost().getId(),
+//                comment.getUser().getId(),
+//                comment.getId(),
+//                comment.getContent(),
+//                comment.getCreatedAt(),
+//                comment.getModifiedAt()
+//        );
     }
 
     // 댓글 삭제 기능
