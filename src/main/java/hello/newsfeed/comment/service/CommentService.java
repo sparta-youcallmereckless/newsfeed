@@ -40,8 +40,8 @@ public class CommentService {
 
         Comment comment = new Comment(
                 commentRequest.getContent(),
-                user,
-                post
+                post,
+                user
         );
 
         Comment savedComment = commentRepository.save(comment);
