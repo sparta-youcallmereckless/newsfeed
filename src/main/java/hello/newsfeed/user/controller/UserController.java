@@ -10,6 +10,7 @@ import hello.newsfeed.user.dto.response.UserUpdateResponse;
 import hello.newsfeed.user.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -70,7 +71,7 @@ public class UserController {
     @PatchMapping("/users/me/password")
     public ResponseEntity<Void> updatePassword(
             @SessionAttribute(name = Const.LOGIN_USER) Long userId,
-            @RequestBody PasswordUpdateRequest passwordUpdateRequest
+            @Valid @RequestBody PasswordUpdateRequest passwordUpdateRequest
     ) {
         return ResponseEntity.ok(userService.updatePassword(userId, passwordUpdateRequest));
     }

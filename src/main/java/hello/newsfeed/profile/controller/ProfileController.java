@@ -2,13 +2,13 @@ package hello.newsfeed.profile.controller;
 
 import hello.newsfeed.common.consts.Const;
 import hello.newsfeed.profile.dto.request.ProfileDeleteRequest;
-import hello.newsfeed.user.dto.request.PasswordUpdateRequest;
 import hello.newsfeed.profile.dto.request.ProfileCreateRequest;
 import hello.newsfeed.profile.dto.request.ProfileUpdateRequest;
 import hello.newsfeed.profile.dto.response.ProfileCreateResponse;
 import hello.newsfeed.profile.dto.response.ProfileResponse;
 import hello.newsfeed.profile.service.ProfileService;
 import hello.newsfeed.profile.dto.response.ProfileUpdateResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +20,7 @@ public class ProfileController {
     private final ProfileService profileService;
 
     // 유저 프로필 생성
-    @PostMapping("users/me/profile")
+    @PostMapping("/users/me/profile")
     public ResponseEntity<ProfileCreateResponse> save(
             @SessionAttribute(name = Const.LOGIN_USER) Long userId,
             @RequestBody ProfileCreateRequest profileCreateRequest
@@ -48,7 +48,7 @@ public class ProfileController {
     @PutMapping("/users/me/profile")
     public ResponseEntity<ProfileUpdateResponse> update(
             @SessionAttribute(name = Const.LOGIN_USER) Long userId,
-            @RequestBody ProfileUpdateRequest userProfileUpdateRequest
+            @Valid @RequestBody ProfileUpdateRequest userProfileUpdateRequest
     ) {
         return ResponseEntity.ok(profileService.update(userId, userProfileUpdateRequest));
     }
@@ -57,7 +57,7 @@ public class ProfileController {
     @DeleteMapping("/users/me/profile")
     public void deleteProfile(
             @SessionAttribute(name = Const.LOGIN_USER) Long userId,
-            @RequestBody ProfileDeleteRequest profileDeleteRequest
+            @Valid @RequestBody ProfileDeleteRequest profileDeleteRequest
     ) {
         profileService.deleteProfile(userId, profileDeleteRequest.getPassword());
     }

@@ -1,5 +1,6 @@
 package hello.newsfeed.user.service;
 
+import hello.newsfeed.common.config.PasswordEncoder;
 import hello.newsfeed.user.dto.request.PasswordUpdateRequest;
 import hello.newsfeed.user.dto.request.UserCreateRequest;
 import hello.newsfeed.user.dto.request.UserUpdateRequest;
@@ -10,6 +11,7 @@ import hello.newsfeed.user.entity.User;
 import hello.newsfeed.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +23,7 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
-
+    private final PasswordEncoder passwordEncoder;
 
     // @Transactional이 없으면 일부만 저장되고 데이터가 꼬일 수 있음
     @Transactional // 생성이기 때문에  @Transactional 해줌 (@Transactional이 없으면 일부만 저장되고 데이터가 꼬일 수 있음)
@@ -75,7 +77,7 @@ public class UserService {
     @Transactional
     public UserUpdateResponse updateUser(Long userId, UserUpdateRequest request) {
         User user = userRepository.findById(userId).orElseThrow(
-                () -> new EntityNotFoundException("해당 id의 유저를 찾을 수 없습니다.")
+                () -> new EntityNotFoundException("존재하지 않는 사용자입니다.")
         );
 
         // 더티체킹
@@ -95,11 +97,15 @@ public class UserService {
     public void deleteById(Long userId) {
         userRepository.deleteById(userId);
     }
-
     @Transactional
     public Void updatePassword(Long userId, PasswordUpdateRequest passwordUpdateRequest) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("user not found")); // TODO: 예외처리 변경 예정
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다.")); // TODO: 예외처리 변경 예정
+
+        // 현재 비밀번호 불일치 → 400
+        if (!passwordEncoder.matches(passwordUpdateRequest.getCurrentPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다.");
+        }
 
         user.updatePassword(passwordUpdateRequest.getNewPassword());
         return null;
