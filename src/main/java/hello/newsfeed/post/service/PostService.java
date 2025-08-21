@@ -31,7 +31,7 @@ public class PostService {
         Post savedPost = postRepository.save(post);
         // repository를 통해 데이터 저장
         // 저장된 데이터 반환받아 값 확보
-        return toResponse(savedPost);
+        return savedPost.toResponse();
         //저장된 포스트 엔티티 포스트 리스폰스 디티오로 변환후 반환
     }
 
@@ -47,7 +47,7 @@ public class PostService {
         //이 리스트를 최종적으로 사용자에게 주기
         for (Post post : posts) {
             //조회된 각 포스트를 반복
-            postResponses.add(toResponse(post));
+            postResponses.add(post.toResponse());
         }
         //각 포스트를 리스폰디티오로 변한후 리스트 추가
         return postResponses;
@@ -61,7 +61,7 @@ public class PostService {
         Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("잘못된 입력입니다."));
         //데이터에서 postId로 조회
         //없다면 런타임 예외 출력
-        return toResponse(post);
+        return post.toResponse();
         //조회된 포스트 DTO로 변환후 반환
     }
 
@@ -75,7 +75,7 @@ public class PostService {
         //포스트 엔티티와 업데이트 메서드로
         Post updated = postRepository.save(post);
         //수정된 내용 데이터베이스 저장
-        return toResponse(updated);
+        return updated.toResponse();
     }
 
 @Transactional
@@ -84,7 +84,7 @@ public void  deletePost(Long postId, Long userId)
         {Post post = postRepository.findById(postId).orElseThrow(()-> new RuntimeException("잘못된 입력입니다."));
         //삭제할 게시물조회
         // 없으면 익셉션 발생
-        if (!post.getUserId().equals(UserId)){
+        if (!post.getUser().getId().equals(userId)){
             throw new RuntimeException("잘못된 입력입니다.");
             //요청한 아이디가 게시물 작성자와 다르면 예외 발생
         }
