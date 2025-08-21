@@ -19,119 +19,103 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service
-@RequiredArgsConstructor
+@Service                        // Bean으로 등록할 때 쓰는 annotation
+@RequiredArgsConstructor        // 필수(final) 필드만을 매개변수로 하는 생성자를 자동으로 생성함
 public class CommentService {
+    // 스프링 컨테이너로부터 의존성을 주입받는 싱글톤 CommentRepository, UserRepository, PostRepository 객체 (나 이 객체 사용할래! 스프링 컨테이너: 알겠어 써!)
+    // 싱글톤: 어떤 클래스를 하나의 객체로 만드는 것
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
     private final PostRepository postRepository;
 
     // 댓글 생성
-    @Transactional
+    @Transactional                      // 트랜잭션을 관리하기 위해 사용하는 annotation
     public CommentCreateResponse createComment(Long userId, Long postId, CommentCreateRequest commentRequest) {
+        // 유저 ID가 일치하는 User 엔티티를 조회함
+        // 일치하는 User 엔티티가 없으면 예외를 발생시킴
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다.")
         );
 
+        // 게시물 ID가 일치하는 Post 엔티티를 조회함
+        // 일치하는 Post 엔티티가 없으면 예외를 발생시킴
         Post post = findPostById(postId);
 
-//        Comment comment = new Comment(
-//                commentRequest.getContent(),
-//                post,
-//                user
-//        );
-        // DTO -> Entity로 변환 (Builder 패턴 적용)
+        // CommentCreateRequest(DTO)를 Comment 엔티티 객체로 변환함 (Builder 패턴 사용)
         Comment comment = commentRequest.toEntity(post, user);
 
+        // save 메서드를 활용하여 Comment 엔티티를 데이터베이스에 저장하고, 저장된 객체를 반환함
         Comment savedComment = commentRepository.save(comment);
 
+        // 저장된 Comment 엔티티를 CommentCreateResponse(DTO)로 변환하여 반환함
         return CommentCreateResponse.from(savedComment);
-//        return new CommentCreateResponse(
-//                post.getId(),
-//                user.getId(),
-//                savedComment.getId(),
-//                savedComment.getContent(),
-//                savedComment.getCreatedAt(),
-//                savedComment.getModifiedAt()
-//        );
     }
 
     // 댓글 전체 조회
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true)      // 트랜잭션을 관리하기 위해 사용하는 annotation (읽기 전용)
     public List<CommentReadAllResponse> getAllComments(Long postId) {
+        // postId에 해당하는 Comment 엔티티를 조회하여 리스트로 저장함
         List<Comment> comments = commentRepository.findByPostId(postId);
 
+        // Comment 엔티티 리스트를 CommentReadAllResponse(DTO) 리스트로 변환하여 반환함
         return comments.stream().map(CommentReadAllResponse::from).collect(Collectors.toList());
-
-//        return comments.stream().map(comment -> new CommentReadAllResponse(
-//                comment.getPost().getId(),
-//                comment.getUser().getId(),
-//                comment.getId(),
-//                comment.getContent(),
-//                comment.getCreatedAt(),
-//                comment.getModifiedAt()
-//        )).collect(Collectors.toList());
     }
 
-
-
     // 댓글 단건 조회
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true)     // 트랜잭션을 관리하기 위해 사용하는 annotation (읽기 전용)
     public CommentReadSingleResponse getComment(Long postId, Long commentId) {
-        Post post = postRepository.findById(postId).orElseThrow(
-                () -> new IllegalArgumentException("해당 게시물이 존재하지 않습니다.")
-        );
+        // 게시물 ID가 일치하는 Post 엔티티를 조회함
+        // 일치하는 Post 엔티티가 없으면 예외를 발생시킴
+        Post post = findPostById(postId);
 
+        // 댓글 ID가 일치하는 Comment 엔티티를 조회함
+        // 일치하는 Comment 엔티티가 없으면 예외를 발생시킴
         Comment comment = findCommentById(commentId);
 
-        if(!post.getId().equals(comment.getPost().getId())) {
+        // 전달받은 게시물 ID와 댓글이 속한 게시물 ID가 일치하지 않으면
+        if (!post.getId().equals(comment.getPost().getId())) {
+            // 예외(IllegalArgumentException)를 발생시킴
             throw new IllegalArgumentException("게시글에 해당 댓글이 존재하지 않습니다.");
         }
 
+        // 저장된 Comment 엔티티를 CommentReadSingleResponse(DTO)로 변환하여 반환함
         return CommentReadSingleResponse.from(comment);
-//        return new CommentReadSingleResponse(
-//                post.getId(),
-//                comment.getUser().getId(),
-//                comment.getId(),
-//                comment.getContent(),
-//                comment.getCreatedAt(),
-//                comment.getModifiedAt()
-//        );
     }
 
     // 댓글 수정 기능
-    @Transactional
+    @Transactional                      // 트랜잭션을 관리하기 위해 사용하는 annotation
     public CommentUpdateResponse updateComment(Long userId, Long commentId, CommentUpdateRequest commentUpdateRequest) {
+        // 댓글 ID가 일치하는 Comment 엔티티를 조회함
+        // 일치하는 Comment 엔티티가 없으면 예외를 발생시킴
         Comment comment = findCommentById(commentId);
 
-        if(!comment.getUser().getId().equals(userId)) {
+        // 댓글 작성자 ID와 전달받은 사용자 ID가 일치하지 않으면
+        if (!comment.getUser().getId().equals(userId)) {
+            // 예외(IllegalArgumentException)를 발생시킴
             throw new IllegalArgumentException("댓글 작성자만 수정할 수 있습니다.");
         }
 
+        // Comment 엔티티의 댓글 내용(content)을 요청 DTO의 값으로 수정함
         comment.update(commentUpdateRequest.getContent());
 
+        // 저장된 Comment 엔티티를 CommentUpdateResponse(DTO)로 변환하여 반환함
         return CommentUpdateResponse.from(comment);
-//        return new CommentUpdateResponse(
-//                comment.getPost().getId(),
-//                comment.getUser().getId(),
-//                comment.getId(),
-//                comment.getContent(),
-//                comment.getCreatedAt(),
-//                comment.getModifiedAt()
-//        );
     }
 
     // 댓글 삭제 기능
-    @Transactional
+    @Transactional                      // 트랜잭션을 관리하기 위해 사용하는 annotation
     public void deleteComment(Long userId, Long commentId) {
-        Comment comment = commentRepository.findById(commentId).orElseThrow(
-                () -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다.")
-        );
+        // 댓글 ID가 일치하는 Comment 엔티티를 조회함
+        // 일치하는 Comment 엔티티가 없으면 예외를 발생시킴
+        Comment comment = findCommentById(commentId);
 
-        if(!comment.getUser().getId().equals(userId) || !comment.getPost().getUser().getId().equals(userId)) {
+        // 댓글 작성자(userId) 또는 댓글이 달린 게시글의 작성자(userId)가 아닌 경우
+        if (!comment.getUser().getId().equals(userId) || !comment.getPost().getUser().getId().equals(userId)) {
+            // 예외(IllegalArgumentException)를 발생시킴
             throw new IllegalArgumentException("댓글 작성자 또는 게시글 작성자만 삭제할 수 있습니다.");
         }
 
+        // commentId 해당하는 Comment 엔티티를 데이터베이스에서 삭제함
         commentRepository.delete(comment);
     }
 
