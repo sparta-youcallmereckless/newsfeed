@@ -45,7 +45,7 @@ public class FollowController {
 
             //요청 바디(JSON 형식)에 들어 있는 followRequestDto 데이터를 꺼내옴. 이 안에는 "누구를 팔로우할지 (followeeId)" 정보가 들어 있음.
             @RequestBody FollowRequestDto followRequestDto
-            **/
+            **//
     //
 
 
