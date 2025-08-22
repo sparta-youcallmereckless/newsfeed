@@ -25,8 +25,8 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
 
-
-    @Transactional                                                                      // 생성이기 때문에  @Transactional 해줌 (@Transactional이 없으면 일부만 저장되고 데이터가 꼬일 수 있음)
+    @Transactional
+    // 생성이기 때문에  @Transactional 해줌 (@Transactional이 없으면 일부만 저장되고 데이터가 꼬일 수 있음)
     public UserCreateResponse save(UserCreateRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new IllegalArgumentException("해당 이메일은 이미 사용중입니다.");
@@ -71,7 +71,7 @@ public class UserService {
     @Transactional(readOnly = true) // 트랜잭션을 읽기 전용으로 설정
     public UserResponse findOne(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(
-                () -> new EntityNotFoundException("해당 id의 유저를 찾을 수 없습니다.")
+                () -> new EntityNotFoundException("해당 사용자가 존재하지 않습니다.")
         );
         return new UserResponse(
                 user.getId(),
@@ -86,7 +86,7 @@ public class UserService {
     @Transactional
     public UserUpdateResponse updateUser(Long userId, UserUpdateRequest request) {
         User user = userRepository.findById(userId).orElseThrow(
-                () -> new EntityNotFoundException("존재하지 않는 사용자입니다.")
+                () -> new EntityNotFoundException("해당 사용자가 존재하지 않습니다.")
         );
 
         /* 더티 체킹(Dirty Checking)을 활용하여 엔티티의 상태를 변경
@@ -107,7 +107,7 @@ public class UserService {
     @Transactional
     public Void updatePassword(Long userId, PasswordUpdateRequest passwordUpdateRequest) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
 
         // 현재 비밀번호 불일치 → 400
         if (!passwordEncoder.matches(passwordUpdateRequest.getCurrentPassword(), user.getPassword())) {
@@ -118,6 +118,7 @@ public class UserService {
         return null;
     }
 
+    // 회원 탈퇴
     @Transactional
     public void deleteById(Long userId) {
         userRepository.deleteById(userId);

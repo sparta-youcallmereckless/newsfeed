@@ -7,7 +7,8 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-@Builder /// <<< 이거 확인
+@Builder
+/// <<< 이거 확인
 @Data // Lombok 라이브러리 제공 (자동으로 Getter / Setter / toSting / 기본 생정자 등을 생성. 하지만 final 을 먼저 선언하면 setter 는 선언 안해줌)
 public class FollowResponseDto {
 

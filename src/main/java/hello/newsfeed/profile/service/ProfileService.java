@@ -49,11 +49,11 @@ public class ProfileService {
     @Transactional(readOnly = true)
     public ProfileResponse getMyProfile(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("user not found") // TODO: 예외처리 변경 예정
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다.")
                 );
 
         Profile profile = profileRepository.findByUserId(userId)
-                .orElseThrow(() -> new IllegalArgumentException("프로필을 찾을 수 없습니다.")); // TODO: 예외처리 변경 예정
+                .orElseThrow(() -> new IllegalArgumentException("해당 프로필이 존재하지 않습니다."));
 
         return new ProfileResponse(
                 profile.getId(),
@@ -68,11 +68,11 @@ public class ProfileService {
     @Transactional(readOnly = true)
     public ProfileResponse getOtherProfile(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("user not found")); // TODO: 예외처리 변경 예정
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
 
 
         Profile profile = profileRepository.findByUserId(userId)
-                .orElseThrow(() -> new IllegalArgumentException("프로필을 찾을 수 없습니다.")); // TODO: 예외처리 변경 예정
+                .orElseThrow(() -> new IllegalArgumentException("해당 프로필이 존재하지 않습니다."));
 
         return new ProfileResponse(
                 profile.getId(),
@@ -87,10 +87,10 @@ public class ProfileService {
     @Transactional
     public ProfileUpdateResponse update(Long userId, ProfileUpdateRequest profileUpdateRequest) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("user not found"));  // TODO: 예외처리 변경 예정
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
 
         Profile profile = profileRepository.findByUserId(userId)
-                .orElseThrow(() -> new IllegalArgumentException("프로필을 찾을 수 없습니다.")); // TODO: 예외처리 변경 예정
+                .orElseThrow(() -> new IllegalArgumentException("해당 프로필이 존재하지 않습니다."));
 
         // 프로필 변경
         profile.updateProfile(profileUpdateRequest.getNickname());
@@ -109,10 +109,10 @@ public class ProfileService {
     @Transactional
     public void deleteProfile(Long userId, String password) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("user not found"));  // TODO: 예외처리 변경 예정
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
 
         Profile profile = profileRepository.findByUserId(userId)
-                .orElseThrow(() -> new IllegalArgumentException("user not found"));  // TODO: 예외처리 변경 예정
+                .orElseThrow(() -> new IllegalArgumentException("해당 프로필이 존재하지 않습니다."));
 
         if (password.equals(user.getPassword())) {
             profileRepository.delete(profile);

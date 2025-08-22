@@ -19,7 +19,8 @@ public class Follow extends BaseEntity {
 
     // 기본 키(primary key) 지정
     // 자동 증가 전략: DB가 id 값을 자동으로 생성
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     //followerId 필드를 DB 테이블의 컬럼과 연결
