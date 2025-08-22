@@ -40,7 +40,7 @@ public class FollowService {
         );
     }
 
-    // TODO 사용자 언팔로우
+    // 사용자 언팔로우
     public void unfollowUser(FollowRequestDto requestDto) {
 
         User follower = userRepository.findById(requestDto.getFollowerId())
