@@ -6,40 +6,66 @@ import hello.newsfeed.follow.dto.response.FollowResponseDto;
 import hello.newsfeed.follow.service.FollowService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-@RestController // 이 클래스가 "REST API의 컨트롤러"라는 것을 스프링에게 알려줌 (웹 브라우저나 클라이언트에서 오는 HTTP 요청을 받는 역할)
-@RequestMapping("/api/follows") // 이 컨트롤러에서 제공하는 API의 기본 URL 경로를 지정 (즉, "/api/follows"로 시작하는 요청은 이 컨트롤러가 처리)
-@RequiredArgsConstructor // 스프링이 자동으로 생성자 주입(Dependency Injection)
+import java.util.List;
+
+@RestController
+@RequestMapping("/follow")
+@RequiredArgsConstructor
 
 public class FollowController {
 
+    // Service 객체 의존성 주입
     private final FollowService followService;
 
-
-    // "팔로우 기능" 담당 API.
-    // HTTP 메서드 중 POST 요청을 받으며, URL에 {followerId}라는 값을 같이 받아옴.
-    // 예: POST /api/follows/1 → "1번 사용자가 팔로우를 한다"라는 의미
-    @PostMapping("/{followerId}")
+    // 사용자 팔로우
+    @PostMapping
     public ResponseEntity<FollowResponseDto> follow(@RequestBody FollowRequestDto requestDto) {
-        // 서비스에서 팔로우 로직 실행
-        FollowResponseDto response = followService.followUser(requestDto);
 
-        return ResponseEntity.ok(response);
+        // Service 계층에게 "팔로우 처리"를 시킴
+        // followUser()는 DB 저장 같은 실제 로직을 수행하고 결과를 FollowResponseDto 로 반환함
+        FollowResponseDto dto = followService.followUser(requestDto);
+
+        // 메시지 출력
+        dto.setMessage(requestDto.getFollowerId() + "님이" + requestDto.getFollowingId() + "님을" + "팔로우 합니다");
+
+        // ResponseEntity.ok() : 응답 코드 200(성공)과 함께 dto 객체를 반환
+        return ResponseEntity.ok(dto);
+    }
+
+    // 사용자 언팔로우
+    @DeleteMapping
+    public ResponseEntity<FollowResponseDto> unfollow(@RequestBody FollowRequestDto requestDto) {
+
+        // Service 계층에게 "언팔로우 처리"를 시킴
+        followService.unfollowUser(requestDto);
+
+        // 응답으로 보낼 DTO를 직접 생성
+        FollowResponseDto dto = new FollowResponseDto(
+                null, // id 값은 null (DB 저장이 필요 없으니까)
+                requestDto.getFollowerId(),
+                requestDto.getFollowingId(),
+                requestDto.getFollowingId() + "를 언팔로우 했습니다."
+        );
+
+        // 최종 응답 반환 (200 OK + dto)
+        return ResponseEntity.ok(dto);
+    }
+
+    // 내가 팔로우한 사람들 조회
+    @GetMapping("/following/{userId}")
+    public List<Long> getFollowingList(@PathVariable Long userId) {
+        return followService.getFollowingList(userId);
+    }
+
+    // 나를 팔로우한 사람들 조회
+    @GetMapping("/followers/{userId}")
+    public List<Long> getFollowerList(@PathVariable Long userId) {
+        return followService.getFollowerList(userId);
+
+
     }
 }
 
-    /**& public ResponseEntity<String> follow(
-            // URL 경로에서 followerId 값을 꺼내옴. 즉, "누가 팔로우를 하는지"를 알 수 있음.
-            @PathVariable Long followerId,
-            //요청 바디(JSON 형식)에 들어 있는 followRequestDto 데이터를 꺼내옴. 이 안에는 "누구를 팔로우할지 (followeeId)" 정보가 들어 있음.
-            @RequestBody FollowRequestDto followRequestDto
-            **/
-
-        // "Service 계층"에 있는 follow() 메서드를 호출해서 실제 비즈니스 로직(팔로우 저장)을 처리.
-        // “followService라는 객체 변수 안의 follow 메서드를 호출해서, followerId와 requestDto를 전달하고, 결과 문자열을 message 변수에 담는다.”
-       //String message = followService.follow(followerId, requestDto);
 

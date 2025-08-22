@@ -1,0 +1,9 @@
+package hello.newsfeed.profile.dto.request;
+
+import lombok.Getter;
+
+@Getter
+public class ProfileDeleteRequest {
+
+    private String password;
+}
