@@ -7,11 +7,11 @@ import hello.newsfeed.post.repository.PostRepository;
 import hello.newsfeed.user.entity.User;
 import hello.newsfeed.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -46,34 +46,23 @@ public class PostService {
                 savedPost.getContent(),
                 savedPost.getCreatedAt(),
                 savedPost.getModifiedAt()
-        );
-//        return savedPost.toResponse();
-        //저장된 포스트 엔티티 포스트 리스폰스 디티오로 변환후 반환
+        );//저장된 포스트 엔티티 포스트 리스폰스 디티오로 변환후 반환
     }
 
     @Transactional(readOnly = true)
-    public List<PostResponse> findAllPosts() {
-        //전체 개시물 조회
-        List<Post> posts = postRepository.findAll();
-        //데이터에서 모든 포스트 조회
-        //리스트 포스트 형태로 반환
-        List<PostResponse> postResponses = new ArrayList<>();
-        //저장된것을 담을 새로운 리스트 생성
-        //이 리스트를 최종적으로 사용자에게 주기
-        for (Post post : posts) {
-            //조회된 각 포스트를 반복
-            postResponses.add(new PostResponse(
-                    post.getId(),
-                    post.getTitle(),
-                    post.getContent(),
-                    post.getCreatedAt(),
-                    post.getModifiedAt()
-            ));
-//            postResponses.add(post.toResponse());
-        }
-        //각 포스트를 리스폰디티오로 변한후 리스트 추가
-        return postResponses;
-        //모든 포스트를 리스폰디티오로 변환후 리스트 반환
+    public Page<PostResponse> findAllPosts(Pageable pageable) {
+        Page<Post> posts = postRepository.findAll(pageable);
+        // pageable 객체에 페이징된 post목록을 조회
+        return posts.map(post -> new PostResponse(
+                post.getId(),
+                post.getTitle(),
+                post.getContent(),
+                post.getCreatedAt(),
+                post.getModifiedAt()
+
+        ));
+        //모든 포스트를 리스폰디티오로 변환후 페이지포스트의 맵 메서드를 사용 하여 각 포스트를 포스트 리스폰 으로 변환하고
+        //포스트 리포지트로 반환
     }
 
     @Transactional(readOnly = true)
@@ -92,7 +81,6 @@ public class PostService {
 
         //데이터에서 postId로 조회
         //없다면 런타임 예외 출력
-//        return post.toResponse();
         //조회된 포스트 DTO로 변환후 반환
     }
 
