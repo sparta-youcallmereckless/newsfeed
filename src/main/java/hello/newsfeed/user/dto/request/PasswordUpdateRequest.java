@@ -13,12 +13,9 @@ public class PasswordUpdateRequest {
 
     // 새 비밀번호 (형식 유효성 검사 포함)
     @NotBlank(message = "새 비밀번호를 입력해주세요.")
-    @Pattern(
-            regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,20}$",
-            message = "비밀번호는 8~20자이며, 영문/숫자/특수문자를 모두 포함해야 합니다."
-    )
+    @Pattern(regexp = "(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\\W)(?=\\S+$).{8,16}",
+            message = "비밀번호는 8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요.")
     private String newPassword;
-
 
     /*
      * 예외 처리 기준

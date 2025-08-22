@@ -23,9 +23,8 @@ public class UserController {
 
     private final UserService userService;
 
-    // 유저 생성
-    // TODO: 회원가입 signup으로 진행
-    @PostMapping("/users/signup")
+    // 회원 가입
+    @PostMapping("/signup")
     public ResponseEntity<UserCreateResponse> createUser(
             @Valid @RequestBody UserCreateRequest request
     ) {
@@ -46,25 +45,13 @@ public class UserController {
         return ResponseEntity.ok(userService.findOne(userId));
     }
 
-    // 특정 유저 수정 (이메일 수정)
-    @PutMapping("/users/{userId}")
+    // 유저 정보 수정 (이메일 수정)
+    @PatchMapping("/users")
     public ResponseEntity<UserUpdateResponse> updateUser(
-            @PathVariable Long userId,
+            @SessionAttribute(name = Const.LOGIN_USER) Long userId,
             @RequestBody UserUpdateRequest request
     ) {
         return ResponseEntity.ok(userService.updateUser(userId, request));
-    }
-
-    // 회원 탈퇴
-    @DeleteMapping("/users/{userId}")
-    public void deleteUser(
-            HttpServletRequest request,
-            @PathVariable Long userId
-    ) {
-        HttpSession session = request.getSession(false);
-        Long userIdFromSession = (Long) session.getAttribute("LOGIN_USER");
-        userService.deleteById(userId);
-        session.invalidate();
     }
 
     // 유저 비밀번호 수정
@@ -75,4 +62,16 @@ public class UserController {
     ) {
         return ResponseEntity.ok(userService.updatePassword(userId, passwordUpdateRequest));
     }
+
+    // 회원 탈퇴
+    @DeleteMapping("/users")
+    public void deleteUser(
+            HttpServletRequest request
+    ) {
+        HttpSession session = request.getSession(false);
+        Long userIdFromSession = (Long) session.getAttribute("LOGIN_USER");
+        userService.deleteById(userIdFromSession);
+        session.invalidate();
+    }
+
 }
