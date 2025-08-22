@@ -118,6 +118,7 @@ public class UserService {
         return null;
     }
 
+    // 회원 탈퇴
     @Transactional
     public void deleteById(Long userId) {
         userRepository.deleteById(userId);
