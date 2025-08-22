@@ -7,16 +7,16 @@ import java.time.LocalDateTime;
 @Getter
 public class PostResponse {
     private  Long id;
-    private  String authorId;
+//    private  String authorId;
     private final String title;
     private final String content;
     private  LocalDateTime createdAt;
     private  LocalDateTime modifiedAt;
 
     public PostResponse
-            (Long id, String authorId, String title, String content, LocalDateTime createdAt, LocalDateTime modifiedAt) {
+            (Long id, String title, String content, LocalDateTime createdAt, LocalDateTime modifiedAt) {
         this.id = id;
-        this.authorId = authorId;
+//        this.authorId = authorId;
         this.title = title;
         this.content = content;
         this.createdAt = createdAt;

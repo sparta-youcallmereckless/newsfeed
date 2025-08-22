@@ -23,7 +23,7 @@ public class ProfileService {
     @Transactional
     public ProfileCreateResponse save(Long userId, ProfileCreateRequest profileCreateRequest) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("user not found")); // TODO: 예외처리 변경 예정
+                .orElseThrow(() -> new IllegalArgumentException("user not found"));
 
         // 프로필 생성
         Profile newProfile = new Profile(

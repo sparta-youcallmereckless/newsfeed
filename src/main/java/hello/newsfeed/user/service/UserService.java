@@ -11,7 +11,6 @@ import hello.newsfeed.user.entity.User;
 import hello.newsfeed.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,14 +24,21 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+
     // @Transactional이 없으면 일부만 저장되고 데이터가 꼬일 수 있음
     @Transactional // 생성이기 때문에  @Transactional 해줌 (@Transactional이 없으면 일부만 저장되고 데이터가 꼬일 수 있음)
     public UserCreateResponse save(UserCreateRequest request) {
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new IllegalArgumentException("해당 이메일은 이미 사용중입니다.");
+        }
+        String encodedPassword = passwordEncoder.encode(request.getPassword());
+
         User user = new User(
                 request.getUsername(),
                 request.getEmail(),
-                request.getPassword()
+                encodedPassword
         );
+
         User savedUser = userRepository.save(user);
         return new UserCreateResponse(
                 savedUser.getId(),
@@ -94,10 +100,6 @@ public class UserService {
     }
 
     @Transactional
-    public void deleteById(Long userId) {
-        userRepository.deleteById(userId);
-    }
-    @Transactional
     public Void updatePassword(Long userId, PasswordUpdateRequest passwordUpdateRequest) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다.")); // TODO: 예외처리 변경 예정
@@ -109,6 +111,11 @@ public class UserService {
 
         user.updatePassword(passwordUpdateRequest.getNewPassword());
         return null;
+    }
+
+    @Transactional
+    public void deleteById(Long userId) {
+        userRepository.deleteById(userId);
     }
 }
 

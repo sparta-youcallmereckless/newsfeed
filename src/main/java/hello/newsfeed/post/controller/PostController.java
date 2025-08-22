@@ -1,13 +1,18 @@
 package hello.newsfeed.post.controller;
 
+import hello.newsfeed.common.consts.Const;
 import hello.newsfeed.post.dto.request.PostRequest;
 import hello.newsfeed.post.dto.response.PostResponse;
 
+import hello.newsfeed.post.entity.Post;
 import hello.newsfeed.post.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 //리스폰스 Http응답 세밀하게 제어 할수 있음 `리스폰스 엔티티`질문하기
 //글로벌 예외처리 할때 필요할듯
@@ -26,51 +31,57 @@ public class PostController {
     @PostMapping("/posts")
     // HTTP POST 요청 경로 이하 생략 "/Posts"와 매핑
     // 새로운 게시물 생성 요청
-    public PostResponse savePost
-            (@Valid@RequestBody PostRequest postRequest) {
+    public ResponseEntity<PostResponse> savePost(
+            @SessionAttribute(name = Const.LOGIN_USER) Long userId,
+            @Valid@RequestBody PostRequest postRequest
+    ) {
         // 클라이언트 요청 본문에 담긴 PostRequest를 PostRequest로 받아옴
         // @RequestBody는 JSON을 PostRequest 객체로 변환
-        return postService.savePost(postRequest);
+
+        return ResponseEntity.ok(postService.savePost(userId, postRequest));
         // 서비스 savePost 호출
         //디비 저장 후 DTO로 변환된 결과를 반환
     }
 
     @GetMapping("/posts")
-    //전체 게시물 조회 요청
-    public List<PostResponse> findAllPosts() {
-        return postService.findAllPosts();
+    // 전체 게시물 조회 요청
+    public ResponseEntity<List<PostResponse>> findAllPosts() {
+        return ResponseEntity.ok(postService.findAllPosts());
         //서비스 findAllPosts 호출
         //디비에서 모든 게시물 조회 DTO 리스트 반환
     }
 
     @GetMapping("/posts/{postId}")
-    //게시물 하나 조회 요청
-    public PostResponse findPostById(@PathVariable Long postId) {
-        return postService.findPostById(postId);
+    // 단건 게시물 조회 요청
+    public ResponseEntity<PostResponse> findPostById(
+            @PathVariable Long postId
+    ) {
+        return ResponseEntity.ok(postService.findPostById(postId));
         //서비스 findPostById호출
         //디비 에서 사용자가 지정한 개시물 조회후 반환
     }
 
     @PutMapping("/posts/{postId}")
     //수정 메서드
-    public PostResponse updatePost(
+    public ResponseEntity<PostResponse> updatePost(
+            @SessionAttribute(name = Const.LOGIN_USER) Long userId,
             @Valid @RequestBody PostRequest postRequest,
-            @PathVariable Long postId)
+            @PathVariable Long postId
     //본문에서(Json형태)로 내용을 PostRequest로 받고
     //사용자에게 수정할 게시물 ID(포스트 아이디)를 받음
-    {
-        return postService.updatePost(postId, postRequest);
+    ) {
+        return ResponseEntity.ok(postService.updatePost(userId, postId, postRequest));
     }
     //서비스 업데이트 호출 수정후 DTO 반화
 
     @DeleteMapping("/posts/{postId}")
     //삭제 기능
     public void deletePost(
-            @RequestParam Long userId,
-            @PathVariable Long postId)
+            @SessionAttribute(name = Const.LOGIN_USER) Long userId,
+            @PathVariable Long postId
     // 리퀘스트 파람으로 userID 삭제할사람 식별
     // 패스 베리어블로 삭제할 포스트 식별
-    {
+    ) {
         postService.deletePost(postId, userId);
     }
 //서비스에서 삭제 조건 확인후 디비에서 삭제 수행
