@@ -8,8 +8,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/api/follows")
+@RequestMapping("/follow")
 @RequiredArgsConstructor
 
 public class FollowController {
@@ -26,7 +28,7 @@ public class FollowController {
         FollowResponseDto dto = followService.followUser(requestDto);
 
         // 메시지 출력
-        dto.setMessage(requestDto.getFollowerId() +"님이" + requestDto.getFollowingId() + "님을" + "팔로우 합니다");
+        dto.setMessage(requestDto.getFollowerId() + "님이" + requestDto.getFollowingId() + "님을" + "팔로우 합니다");
 
         // ResponseEntity.ok() : 응답 코드 200(성공)과 함께 dto 객체를 반환
         return ResponseEntity.ok(dto);
@@ -44,13 +46,26 @@ public class FollowController {
                 null, // id 값은 null (DB 저장이 필요 없으니까)
                 requestDto.getFollowerId(),
                 requestDto.getFollowingId(),
-                 requestDto.getFollowingId() + "를 언팔로우 했습니다."
+                requestDto.getFollowingId() + "를 언팔로우 했습니다."
         );
 
         // 최종 응답 반환 (200 OK + dto)
         return ResponseEntity.ok(dto);
     }
-}
 
+    // TODO 내가 팔로우한 사람들 조회
+    @GetMapping("/following/{userId}")
+    public List<Long> getFollowingList(@PathVariable Long userId) {
+        return followService.getFollowingList(userId);
+    }
+
+    // TODO 나를 팔로우한 사람들 조회
+    @GetMapping("/followers/{userId}")
+    public List<Long> getFollowerList(@PathVariable Long userId) {
+        return followService.getFollowerList(userId);
+
+
+    }
+}
 
 
