@@ -2,6 +2,7 @@ package hello.newsfeed.common.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -43,8 +44,24 @@ public class GlobalExceptionHandler {
         public String getError() { return error; }
         public String getMessage() { return message; }
         public String getPath() { return path; }
+        public void setMessage(String message) { this.message = message; }
     }
 
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException e, WebRequest request) {
+
+        String path = request.getDescription(false).replace("uri=", "");
+
+        String message = e.getBindingResult().getFieldError() != null
+                ? e.getBindingResult().getFieldError().getDefaultMessage()
+                : "Validation error";
+
+        ErrorResponse errorResponse = new ErrorResponse(ErrorCode.BAD_REQUEST, path);
+        errorResponse.setMessage(message);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+
+    }
 
 
     // IllegalArgumentException 처리 → 400 Bad Request
