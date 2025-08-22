@@ -113,8 +113,8 @@ public class UserService {
         if (!passwordEncoder.matches(passwordUpdateRequest.getCurrentPassword(), user.getPassword())) {
             throw new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다.");
         }
-
-        user.updatePassword(passwordUpdateRequest.getNewPassword());
+        String encodedPassword = passwordEncoder.encode(passwordUpdateRequest.getNewPassword());
+        user.updatePassword(encodedPassword); // 암호화된 비밀번호로 업데이트
         return null;
     }
 
