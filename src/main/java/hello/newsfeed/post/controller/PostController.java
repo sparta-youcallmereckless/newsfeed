@@ -23,7 +23,6 @@ import java.util.List;
 // final 필드(postService)에 대한 생성자를 자동으로 만들어 의존성 주입
 public class PostController {
 
-
     private final PostService postService;
     // PostService 의존성 주입
     // 실제 게시물 생성, 조회, 수정, 삭제 로직은 서비스에서 수행
