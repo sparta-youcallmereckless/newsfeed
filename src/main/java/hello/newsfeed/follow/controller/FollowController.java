@@ -19,7 +19,7 @@ public class FollowController {
     // Service 객체 의존성 주입
     private final FollowService followService;
 
-    // 팔로우
+    // 사용자 팔로우
     @PostMapping
     public ResponseEntity<FollowResponseDto> follow(@RequestBody FollowRequestDto requestDto) {
 
@@ -34,7 +34,7 @@ public class FollowController {
         return ResponseEntity.ok(dto);
     }
 
-    // 언팔로우
+    // 사용자 언팔로우
     @DeleteMapping
     public ResponseEntity<FollowResponseDto> unfollow(@RequestBody FollowRequestDto requestDto) {
 
