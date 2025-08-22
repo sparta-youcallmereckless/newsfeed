@@ -1,8 +1,6 @@
 package hello.newsfeed.post.entity;
 
 import hello.newsfeed.common.entity.BaseEntity;
-import hello.newsfeed.post.dto.request.PostRequest;
-import hello.newsfeed.post.dto.response.PostResponse;
 import hello.newsfeed.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -27,24 +25,14 @@ public class Post extends BaseEntity {
     @JoinColumn(name = "userid", nullable = false)
     private User user;
 
-    public Post(
-            Long id, String title, String content) {
-        this.id = id;
+    public Post(String title, String content, User user) {
         this.title = title;
         this.content = content;
+        this.user = user;
     }
-    public Post(PostRequest postRequest) {
+
+    public void update(String title, String content) {
         this.title = title;
         this.content = content;
-    }
-    public void update(PostRequest postRequest) {
-        this.title = title;
-        this.content = content;
-    }
-    public PostResponse toResponse() {
-        return new PostResponse(
-                this.title,
-                this.content
-        );
     }
 }
