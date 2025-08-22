@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 @Getter
 public class PostResponse {
-    private final   Long id;
+    private final Long id;
     private final String title;
     private final String content;
     private final LocalDateTime createdAt;
@@ -22,5 +22,3 @@ public class PostResponse {
     }
 
 }
-
-//파이널 내가 임의로 지움 (당장 오류해결)

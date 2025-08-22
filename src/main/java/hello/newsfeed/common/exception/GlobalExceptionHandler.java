@@ -39,12 +39,29 @@ public class GlobalExceptionHandler {
             };
         }
 
-        public String getTimestamp() { return timestamp; }
-        public int getStatus() { return status; }
-        public String getError() { return error; }
-        public String getMessage() { return message; }
-        public String getPath() { return path; }
-        public void setMessage(String message) { this.message = message; }
+        public String getTimestamp() {
+            return timestamp;
+        }
+
+        public int getStatus() {
+            return status;
+        }
+
+        public String getError() {
+            return error;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        public String getPath() {
+            return path;
+        }
+
+        public void setMessage(String message) {
+            this.message = message;
+        }
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

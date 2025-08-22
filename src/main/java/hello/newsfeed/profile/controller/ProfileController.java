@@ -19,16 +19,16 @@ public class ProfileController {
 
     private final ProfileService profileService;
 
-     /*
-        기능: 유저 프로필 생성 (Create Profile)
-        HTTP Method: POST
-        URL: /users/me/profile (http://localhost:8080/users/me/profile)
-        인증/인가: 로그인 필요 (세션 기반)
-        Request:
-         @SessionAttribute("LOGIN_USER") Long userId: 로그인한 사용자 ID
-         @RequestBody ProfileCreateRequest profileCreateRequest: 생성할 프로필 정보
-        Response: 성공 시 생성된 프로필 정보를 JSON 형태로 반환
-    */
+    /*
+       기능: 유저 프로필 생성 (Create Profile)
+       HTTP Method: POST
+       URL: /users/me/profile (http://localhost:8080/users/me/profile)
+       인증/인가: 로그인 필요 (세션 기반)
+       Request:
+        @SessionAttribute("LOGIN_USER") Long userId: 로그인한 사용자 ID
+        @RequestBody ProfileCreateRequest profileCreateRequest: 생성할 프로필 정보
+       Response: 성공 시 생성된 프로필 정보를 JSON 형태로 반환
+   */
     @PostMapping("/users/me/profile")
     public ResponseEntity<ProfileCreateResponse> save(
             @SessionAttribute(name = Const.LOGIN_USER) Long userId,
@@ -61,7 +61,8 @@ public class ProfileController {
            Request:
             @PathVariable Long userId: 조회할 유저의 ID
            Response: 성공 시 해당 유저의 프로필 정보를 JSON 형태로 반환
-       */    @GetMapping("/users/{userId}/profile")
+       */
+    @GetMapping("/users/{userId}/profile")
     public ResponseEntity<ProfileResponse> getOtherProfile(
             @PathVariable Long userId
     ) {

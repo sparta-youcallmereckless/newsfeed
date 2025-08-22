@@ -37,41 +37,43 @@ public class FollowService {
                 follower.getId(),
                 following.getId(),
                 null
-    );
-}
-// TODO 사용자 언팔로우
-public void unfollowUser(FollowRequestDto requestDto) {
-
-    User follower = userRepository.findById(requestDto.getFollowerId())
-            .orElseThrow(() -> new IllegalArgumentException("팔로우하는 사용자가 존재하지 않습니다."));
-    User following = userRepository.findById(requestDto.getFollowingId())
-            .orElseThrow(() -> new IllegalArgumentException("팔로우 대상 사용자가 존재하지 않습니다."));
-// 1. 삭제할 팔로우 객체 찾기
-    Follow follow = followsRepository.findByFollowerAndFollowing(follower, following);
-    if (follow != null) {
-        // 2. DB에서 삭제 (하드 삭제 -> 해당 레코드 자체를 완전히 제거)
-        followsRepository.delete(follow);
+        );
     }
-}
-// NOTE 5. 팔로잉 리스트 관리
-// 특정 사용자의 팔로잉 목록 조회 (내가 팔로우한 사람들)
-public List<Long> getFollowingList(Long userId) {
-    User follower = userRepository.findById(userId)
-            .orElseThrow(() -> new IllegalArgumentException("사용자가 존재하지 않습니다."));
-    return followsRepository.findAllByFollower(follower)
-            .stream()
-            .map(f -> f.getFollowing().getId())// 실제 following User의 ID 추출
-            .collect(Collectors.toList());
-}
 
-// 나를 팔로우한 사람들
-public List<Long> getFollowerList(Long userId) {
-    User following = userRepository.findById(userId)
-            .orElseThrow(() -> new IllegalArgumentException("사용자가 존재하지 않습니다."));
-    return followsRepository.findAllByFollowing(following)
-            .stream()
-            .map(f -> f.getFollower().getId()) // 실제 follower User의 ID 추출
-            .collect(Collectors.toList());
-}
+    // TODO 사용자 언팔로우
+    public void unfollowUser(FollowRequestDto requestDto) {
+
+        User follower = userRepository.findById(requestDto.getFollowerId())
+                .orElseThrow(() -> new IllegalArgumentException("팔로우하는 사용자가 존재하지 않습니다."));
+        User following = userRepository.findById(requestDto.getFollowingId())
+                .orElseThrow(() -> new IllegalArgumentException("팔로우 대상 사용자가 존재하지 않습니다."));
+// 1. 삭제할 팔로우 객체 찾기
+        Follow follow = followsRepository.findByFollowerAndFollowing(follower, following);
+        if (follow != null) {
+            // 2. DB에서 삭제 (하드 삭제 -> 해당 레코드 자체를 완전히 제거)
+            followsRepository.delete(follow);
+        }
+    }
+
+    // NOTE 5. 팔로잉 리스트 관리
+// 특정 사용자의 팔로잉 목록 조회 (내가 팔로우한 사람들)
+    public List<Long> getFollowingList(Long userId) {
+        User follower = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자가 존재하지 않습니다."));
+        return followsRepository.findAllByFollower(follower)
+                .stream()
+                .map(f -> f.getFollowing().getId())// 실제 following User의 ID 추출
+                .collect(Collectors.toList());
+    }
+
+    // 나를 팔로우한 사람들
+    public List<Long> getFollowerList(Long userId) {
+        User following = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자가 존재하지 않습니다."));
+        return followsRepository.findAllByFollowing(following)
+                .stream()
+                .map(f -> f.getFollower().getId()) // 실제 follower User의 ID 추출
+                .collect(Collectors.toList());
+    }
 
 }
