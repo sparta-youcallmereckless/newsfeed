@@ -1,6 +1,7 @@
 package hello.newsfeed.follow.entity;
 
 import hello.newsfeed.common.entity.BaseEntity;
+import hello.newsfeed.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -22,16 +23,18 @@ public class Follow extends BaseEntity {
     private Long id;
 
     //followerId 필드를 DB 테이블의 컬럼과 연결
-    @Column(nullable = false)
-    private Long followerId; // 팔로우 하는 사람 (나)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "follower_id", nullable = false)
+    private User follower; // 팔로우 하는 사람 (나)
 
-    @Column(nullable = false)
-    private Long followingId; // 팔로우 당하는 사람 (상대방)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "following_Id", nullable = false)
+    private User following; // 팔로우 당하는 사람 (상대방))
 
     // 생성자: 팔로우 관계를 새로 만들 때 사용
-    public Follow(Long followerId, Long followingId) {
-        this.followerId = followerId;
-        this.followingId = followingId;
+    public Follow(User follower, User following) {
+        this.follower = follower;
+        this.following = following;
     }
 }
 
